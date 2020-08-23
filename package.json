@@ -1,0 +1,20 @@
+{
+  "name": "xmen",
+  "version": "1.0.0",
+  "description": "Una api para determinar si un humano es mutante o no",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node server/app.js --service magneto-mutants-detector",
+    "build": "npm run clean && cp -r server dist/server && cp -r bin dist/bin && cp *.yml dist && cp *.json dist && cp *.js dist && rimraf dist/package-lock.json",
+    "clean": "rimraf dist && mkdirp dist"
+  },
+  "author": "Nicolas Ungaro",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^8.1.1"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
