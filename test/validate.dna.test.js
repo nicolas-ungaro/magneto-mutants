@@ -5,7 +5,8 @@ const mutantRepository = require('../server/infrastructure/mutant.repository');
 const firebaseMock = require('./mocks/firebase.repository.mock');
 
 // Mock the database:
-const repository = mutantRepository(firebaseMock());
+let data = require('./mocks/data.json')
+const repository = mutantRepository(firebaseMock(data));
 const validationService = require('../server/services/mutant.validation.service');
 const service = mutantService(repository, validationService(config));
 

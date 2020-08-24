@@ -1,5 +1,5 @@
 {
-    "port": "18000",
+    "port": "8080",
     "mutantDnaStringLength": 4,
     "db":{
         "collection": "dna-samples",

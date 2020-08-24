@@ -1,7 +1,7 @@
 // Mock the database:
-function FirebaseRepository() {
-    let data = require('./data.json')
-
+function FirebaseRepository(dnaData) {    
+    let data = dnaData;
+    
     async function addDocument(dnaData) {
         return data.push(dnaData);
     }

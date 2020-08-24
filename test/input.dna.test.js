@@ -3,6 +3,18 @@ const config = require('../server/config.json');
 const mutantValidationService = require('../server/services/mutant.validation.service');
 
 describe('Dna Input Validations', () => {
+    it ('Should throw exception when dna contains only one char', () => {
+        let dna = ["A"];
+        try {
+            mutantValidationService(config).validateInput(dna);
+        }
+        catch (exception) {
+            msg = exception.indexOf('debe ser de longitud') > 0;
+            assert.equal(msg, true);
+            assert.ok('ok');
+        }
+    });
+
     it('Should throw exception when dna is not NxN', () => {
         let dna = ["ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACT"];
         try {

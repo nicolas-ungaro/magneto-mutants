@@ -3,7 +3,8 @@ const mutantRepository = require('../server/infrastructure/mutant.repository');
 const firebaseMock = require('./mocks/firebase.repository.mock');
 
 // Mock the database:
-const repository = mutantRepository(firebaseMock());
+const data = require('./mocks/data.json')
+const repository = mutantRepository(firebaseMock(data));
 
 describe('Repository tests', () => {
     it('Should find a document', async () => {
