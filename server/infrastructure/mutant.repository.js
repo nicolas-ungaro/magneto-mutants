@@ -1,25 +1,33 @@
 const utils = require('../utils/string.util');
 
-const find = function(dna) {
-    const id = utils.hash(dna);
-    const dnaData = {};
-
-    return dnaData;
-}
-
-const add = function(dnaData) {
-    let result = find(dnaData.dna);
+function MutantsRepository(dbContext) {
+    async function find(dna) {
+        const id = utils.hash(dna.join(''));
+        const dnaData = await dbContext.find(id);
     
-    if (result) return result;
+        return dnaData;
+    }
+    
+    async function add(dnaData) {
+        let result = await find(dnaData.dna);
+        if (result) return result;
+    
+        const id = utils.hash(dnaData.dna.join(''));
+        dnaData.id = id;
+        await dbContext.add(dnaData);
+    
+        return dnaData;
+    }
 
-    const id = utils.hash(dnaData.dna);
-    dnaData.id = id;
-    // saveData(dnaData);
+    async function all() {
+        return await dbContext.all();
+    }
 
-    return dnaData;
+    return {
+        find,
+        add,
+        all
+    }
 }
 
-module.exports = {
-    find,
-    add
-}
+module.exports = MutantsRepository;

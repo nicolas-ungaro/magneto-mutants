@@ -1,49 +1,57 @@
 const assert = require('assert');
+const config = require('../server/config.json');
 const mutantService = require('../server/services/mutant.service');
+const mutantRepository = require('../server/infrastructure/mutant.repository');
+const firebaseMock = require('./mocks/firebase.repository.mock');
+
+// Mock the database:
+const repository = mutantRepository(firebaseMock());
+const validationService = require('../server/services/mutant.validation.service');
+const service = mutantService(repository, validationService(config));
 
 describe('Dna mutant analysis', () => {
-    it('Should return human for a dna of 3x3', () => {
+    it('Should return human for a dna of 3x3', async () => {
         let dna = ["ATG", "CTA", "CCA"];
-        let mutant = mutantService.isMutant(dna);
+        let mutant = await service.isMutant(dna);
         assert.equal(mutant, false);
     });
 
-    it('Should return a mutant for a dna of 6x6 with horizontal match', () => {
+    it('Should return a mutant for a dna of 6x6 with horizontal match', async () => {
         // let dna = ["ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"];
         let dna = ["ATGCGA", "CAGTGC", "TTGTGT", "AGGAGG", "CCCCTA", "TCACTG"]
-        let mutant = mutantService.isMutant(dna);
+        let mutant = await service.isMutant(dna);
         assert.equal(mutant, true);
     });
 
-    it('Should return a mutant for a dna of 6x6 with vertical match', () => {
+    it('Should return a mutant for a dna of 6x6 with vertical match', async () => {
         // let dna = ["ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"];
         let dna = ["ATGCGA", "CAGTGC", "TTGTGT", "AGGAGG", "CACCTA", "TCACTG"]
-        let mutant = mutantService.isMutant(dna);
+        let mutant = await service.isMutant(dna);
         assert.equal(mutant, true);
     });
     
-    it('Should return a mutant for a dna of 6x6 with left to right obliqual match', () => {
+    it('Should return a mutant for a dna of 6x6 with left to right obliqual match', async () => {
         let dna = ["ATGCGA", "TCAATC", "TCCATG", "ATGCGC", "TTAACC", "CGCGAC"];
         // let dna = ["ATGCGA", "TCAGTC", "TCTAGG", "ATGCGG", "TTAACC", "CGCGAC"];
         //let dna = ["ATGCGA", "TCAATC", "TTTAGG", "ATTCGG", "TTATCC", "CGCGAC"];
-        let mutant = mutantService.isMutant(dna);
+        let mutant = await service.isMutant(dna);
         assert.equal(mutant, true);
     });    
 
-    it('Should return a mutant for a dna of 6x6 with right to left obliqual match', () => {
+    it('Should return a mutant for a dna of 6x6 with right to left obliqual match', async () => {
         let dna = ["ATGCGA", "TCAAAC", "TCAATG", "ATACGC", "TTAATC", "CGCGAC"];
-        let mutant = mutantService.isMutant(dna);
+        let mutant = await service.isMutant(dna);
         assert.equal(mutant, true);
     });
 
-    it('Should return a human for a dna of 6x6', () => {
+    it('Should return a human for a dna of 6x6', async () => {
         let dna = ["ATGCGA", "TCAATC", "TCAATG", "ATGCGC", "TTAATC", "CGCGAC"];
-        let mutant = mutantService.isMutant(dna);
+        let mutant = await service.isMutant(dna);
         assert.equal(mutant, false);
     });
 
 
-    it('Should return a mutant for a dna of 100x100', () => {
+    it('Should return a mutant for a dna of 100x100', async () => {
         let dna = [
             "CGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTAGA",
             "GTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTAGCT",
@@ -144,11 +152,11 @@ describe('Dna mutant analysis', () => {
             "CGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACCCGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTAGA",
             "GTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTAGCT",
             "GTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTCGTAAATCGGCTACATCGACTACTAGCC"];        
-            let mutant = mutantService.isMutant(dna);
+            let mutant = await service.isMutant(dna);
             assert.equal(mutant, true);
     });
 
-    it('Should return a human for a dna of 100x100', () => {
+    it('Should return a human for a dna of 100x100', async () => {
         let dna = ["ACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACG",
         "CGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGA",
         "GATCTGCAGATCTGCAGATCTGCAGATCTGCAGATCTGCAGATCTGCAGATCTGCAGATCTGCAGATCTGCAGATCTGCAGATCTGCAGATCTGCAGAT",
@@ -248,7 +256,7 @@ describe('Dna mutant analysis', () => {
         "TCTGACTCTCTGACTCTCTGACTCTCTGACTCTCTGACTCTCTGACTCTCTGACTCTCTGACTCTCTGACTCTCTGACTCTCTGACTCTCTGACTCTCT",
         "ACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACGTTGCAACG",
         "CGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGAACATGCGA"];
-        let mutant = mutantService.isMutant(dna);
+        let mutant = await service.isMutant(dna);
 
         assert.equal(mutant, false);
     });

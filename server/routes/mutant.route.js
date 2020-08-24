@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
-const mutantController = require('../controllers/mutant.controller');
+const  container = require('../container');
 
 router.route('/')
-    .post(mutantController.isMutant);
+    .post(container.mutantController.isMutant);
 
 module.exports = router;
+

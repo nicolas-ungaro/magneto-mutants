@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
-const statsController = require('../controllers/stats.controller');
+const  container = require('../container');
 
 router.route('/')
-    .get(statsController.get);
+    .get(container.statsController.get);
 
 module.exports = router;

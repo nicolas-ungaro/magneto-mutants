@@ -4,21 +4,24 @@ Funcion: Manejar la interaccion entre el servicio de mutant.service y el endpoin
          El controller sabe que responses mandar a traves de cada endpoint de la api mutant en base a la respuesta
          obtenida de el o los servicios que llama.
  */
-const mutantService = require('../services/mutant.service');
+function MutantController(mutantService) {
+    function isMutant(req, res) {
+        // Arrange
+        const dna = req.body.dna;    
+    
+        // Act
+        mutantService.isMutant(dna).then(isMutant =>
+            {
+                // Return
+                let status = isMutant ? 200 : 403;
+                res.status(status);
+                res.end();
+            });    
+    }
 
-const isMutant = function (req, res) {
-    // Arrange
-    const dna = req.body.dna;    
-
-    // Act
-    const isMutant = mutantService.isMutant(dna);
-
-    // Return
-    let status = isMutant ? 200 : 403;
-    res.status(status);
-    res.end();
+    return {
+        isMutant
+    }
 }
 
-module.exports = {
-    isMutant
-}
+module.exports = MutantController;

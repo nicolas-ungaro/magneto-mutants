@@ -1,4 +1,8 @@
 {
     "port": "18000",
-    "mutantDnaStringLength": 4
+    "mutantDnaStringLength": 4,
+    "db":{
+        "collection": "dna-samples",
+        "url": "https://magneto-mutants.firebaseio.com"
+    }
 }
