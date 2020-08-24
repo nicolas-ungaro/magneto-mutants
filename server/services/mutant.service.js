@@ -13,10 +13,7 @@ function MutantService(mutantRepository, mutantValidationService) {
         // Validate    
         mutantValidationService.validateInput(dna);
     
-        //Act
-        const data = await mutantRepository.find(dna);
-        if (data) return data.isMutant;
-        
+        //Act        
         const isMutant = mutantValidationService.isMutant(dna);
 
         await mutantRepository.add( { dna : dna, isMutant : isMutant });
