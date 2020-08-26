@@ -6,7 +6,9 @@ Funcion: Manejar la interaccion entre el servicio de stat.service y el endpoint 
  */
 function StatsController(statsService) {
     function get(req, res) {
-        statsService.get().then(stats => res.send(stats));
+        statsService.get()
+        .then(stats => res.send(stats))
+        .catch((error) => next(new Error(error)));
     }
 
     return {

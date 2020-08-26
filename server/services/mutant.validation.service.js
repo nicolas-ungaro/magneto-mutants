@@ -8,26 +8,18 @@ const matrix = require('../utils/matrix.utils');
 const dnaString = require('../utils/dna.utils');
 
 function MutantValidationService(config) {
-    const threshold = config.mutantDnaStringLength || 4;
+    const mutantDnaStringLength = config.mutantDnaStringLength || 4;
     
-    function isMutant(dna) {
+    async function isMutant(dna) {
         // Asumimos que si la matriz de ADN es de NxN con N > 0 y N < 4 => es un humano.
-        if (dna.length < threshold) return false;
-    
-        if (checkHorizontal(dna))            
-            return true;
-        
-        if (checkVertical(dna)) 
-            return true;
-        
-        if (checkDiagonal(dna))
-            return true;
-    
-        let reversed = matrix.reverse(dna);
-        if (checkDiagonal(reversed))
-            return true;
-    
-        return false;
+        if (dna.length < mutantDnaStringLength) return false;
+
+        let horizontal = checkHorizontal(dna);
+        let vertical = checkVertical(dna);
+        let diagonal = checkDiagonal(dna);
+        let diagonalRight2Left = checkDiagonal(matrix.reverse(dna));
+
+        return await horizontal || await vertical || await diagonal || await diagonalRight2Left;
     }
 
     function validateInput(dna) {
@@ -47,7 +39,8 @@ function MutantValidationService(config) {
         }    
     }
 
-    function checkHorizontal(dna) {
+    // Chequeo de las filas de la matriz de dna
+    async function checkHorizontal(dna) {
         let row = 0;
         let mutant = false;
     
@@ -59,23 +52,29 @@ function MutantValidationService(config) {
         return mutant;
     }
     
-    function checkVertical(dna) {
+    // Chequeo de las columnas de la matriz de dna
+    async function checkVertical(dna) {
         let mutant = false;
         let x = 0;
         while(!mutant && x < dna.length) {
+          // obtengo las columnas de la matriz
           const vertical = dna.map(val => val[x]).join('');
-          mutant = dnaString.containsMutantDna(vertical, threshold);
+          mutant = dnaString.containsMutantDna(vertical, mutantDnaStringLength);
           x++;
         }
     
         return mutant;
     }
     
-    function checkDiagonal(dna) {
+    // Chequeo las cadenas de dna en las diagonales de la matriz
+    async function checkDiagonal(dna) {
         let mutant = false;
-        for (let row = 0; row < dna.length - threshold + 1; row++) {
-            for( let col = 0; col < dna.length - threshold + 1; col++) {
+
+        // Chequeo las diagonales pero avanzo solo hasta la posicion donde se que no va a haber posibilidades de match
+        for (let row = 0; row < dna.length - mutantDnaStringLength + 1; row++) {
+            for( let col = 0; col < dna.length - mutantDnaStringLength + 1; col++) {
                 let x = col;
+
                 const diagonal = dna.map((val, idx) => {
                     let result = '';
                     if (idx >= row) {

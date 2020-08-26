@@ -14,7 +14,7 @@ function MutantService(mutantRepository, mutantValidationService) {
         mutantValidationService.validateInput(dna);
     
         //Act        
-        const isMutant = mutantValidationService.isMutant(dna);
+        const isMutant = await mutantValidationService.isMutant(dna);
 
         await mutantRepository.add( { dna : dna, isMutant : isMutant });
     

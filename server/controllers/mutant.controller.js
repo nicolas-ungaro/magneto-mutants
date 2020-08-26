@@ -5,18 +5,21 @@ Funcion: Manejar la interaccion entre el servicio de mutant.service y el endpoin
          obtenida de el o los servicios que llama.
  */
 function MutantController(mutantService) {
-    function isMutant(req, res) {
+    function isMutant(req, res, next) {
         // Arrange
         const dna = req.body.dna;    
     
         // Act
-        mutantService.isMutant(dna).then(isMutant =>
+        mutantService.isMutant(dna)
+        .then(isMutant =>
             {
                 // Return
                 let status = isMutant ? 200 : 403;
                 res.status(status);
                 res.end();
-            });    
+            })
+        .catch((error) => next(new Error(error)));    
+
     }
 
     return {
